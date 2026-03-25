@@ -10,6 +10,30 @@ let isProcessingQueue = false;
 const DELAY_BETWEEN_REQUESTS = 2500;
 const MAX_RETRIES = 1;
 
+let lastSaveTime = 0;
+let pendingRows: BusinessData[] | null = null;
+let saveTimeout: any = null;
+
+async function debouncedSaveResults(rows: BusinessData[]) {
+  pendingRows = rows;
+  const now = Date.now();
+  if (now - lastSaveTime > 2000) {
+    if (saveTimeout) { clearTimeout(saveTimeout); saveTimeout = null; }
+    lastSaveTime = Date.now();
+    await StorageManager.saveResults(pendingRows);
+    pendingRows = null;
+  } else {
+    if (!saveTimeout) {
+      saveTimeout = setTimeout(async () => {
+        lastSaveTime = Date.now();
+        if (pendingRows) await StorageManager.saveResults(pendingRows);
+        pendingRows = null;
+        saveTimeout = null;
+      }, 2000 - (now - lastSaveTime));
+    }
+  }
+}
+
 chrome.runtime.onInstalled.addListener(async () => {
   await StorageManager.initStorage();
   console.log('[TeraLead] Extension installed and storage initialized');
@@ -30,7 +54,13 @@ chrome.runtime.onMessage.addListener((request: any, _sender: chrome.runtime.Mess
   }
   if (request.type === 'SYNC_ENRICH') {
     findEmailDeep(request.url)
-      .then(email => _sendResponse({ email }))
+      .then(async email => {
+        const stats = await StorageManager.getStats();
+        stats.sitePagesVisited += email ? 1 : 3;
+        if (email) stats.emailsFound++;
+        await StorageManager.updateStats(stats);
+        _sendResponse({ email });
+      })
       .catch(() => _sendResponse({}));
     return true; // Keep channel open
   }
@@ -68,16 +98,17 @@ async function handleScrapingUpdates(request: any) {
   }
 
   if (request.rows && Array.isArray(request.rows)) {
-    for (const row of request.rows) {
-      await StorageManager.addResult(row);
-    }
-    
     if (request.type === MSG.SCRAPE_DONE) {
+      if (saveTimeout) { clearTimeout(saveTimeout); saveTimeout = null; }
+      await StorageManager.saveResults(request.rows);
+
       const config = (await StorageManager.getAllData()).config;
       if (config.enableEnrichment !== false) {
         startEnrichmentQueue(request.rows);
       }
       await StorageManager.setRunning(false);
+    } else {
+      debouncedSaveResults(request.rows).catch(console.error);
     }
   }
 }

@@ -6,6 +6,33 @@ import '../index.css';
 
 const { MSG } = GbpShared as any;
 
+function PsychologicalProgressBar({ active, status }: { active: boolean, status: string }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      setProgress(0);
+      return;
+    }
+    setProgress(5);
+    const interval = setInterval(() => {
+      setProgress(p => {
+        const increment = (95 - p) * 0.04;
+        return p + Math.max(increment, 0.1);
+      });
+    }, 500);
+    return () => clearInterval(interval);
+  }, [active, status]);
+
+  if (!active) return null;
+
+  return (
+    <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '4px', overflow: 'hidden', marginTop: '12px' }}>
+      <div style={{ width: `${progress}%`, height: '100%', background: '#3b82f6', transition: 'width 0.5s ease-out' }} />
+    </div>
+  );
+}
+
 export default function Popup() {
   const [data, setData] = useState<StorageData | null>(null);
 
@@ -59,6 +86,7 @@ export default function Popup() {
   if (!data) return <div className="loading">Loading TeraLead...</div>;
 
   const { stats, config, isRunning, isEnriching } = data;
+  const activeStatus = isRunning ? 'running' : isEnriching ? 'enriching' : 'idle';
 
   return (
     <div className="tl-container">
@@ -86,6 +114,7 @@ export default function Popup() {
           Status: <strong className={isRunning ? 'running' : isEnriching ? 'enriching' : 'ready'}>
             {isRunning ? 'Scraping Google Maps...' : isEnriching ? 'Hunting Emails Deep Web...' : 'Ready / Idle'}
           </strong>
+          <PsychologicalProgressBar active={isRunning || isEnriching} status={activeStatus} />
         </div>
       </section>
 

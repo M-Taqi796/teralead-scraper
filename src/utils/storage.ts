@@ -92,6 +92,10 @@ export const StorageManager = {
     await chrome.storage.local.set({ [STORAGE_KEYS.RESULTS]: results });
   },
 
+  async saveResults(results: BusinessData[]): Promise<void> {
+    await chrome.storage.local.set({ [STORAGE_KEYS.RESULTS]: results });
+  },
+
   async getResults(): Promise<BusinessData[]> {
     const stored = await chrome.storage.local.get(STORAGE_KEYS.RESULTS) as Record<string, unknown>;
     return (stored[STORAGE_KEYS.RESULTS] as BusinessData[]) || [];

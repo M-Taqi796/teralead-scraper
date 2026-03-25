@@ -2575,20 +2575,16 @@ import { GbpShared } from "../utils/shared";
     }
     state.lastProgressDispatchAtMs = now;
 
-    const perf = getPerformanceStats();
-    const payload = {
-      type: MSG.SCRAPE_PROGRESS,
-      run_id: state.runId,
-      tab_id: state.runTabId,
+    const summary = {
       processed: state.processed,
       matched: state.matched,
       duplicates: state.duplicates,
-      fast_skipped: state.fastSkipped,
-      filters: state.activeFilters,
-      inline_enrichment_active: state.inlineEnrichmentActive === true,
-      ...state.enrichmentStats,
-      ...perf,
       errors: state.errors
+    };
+    const payload = {
+      type: MSG.SCRAPE_PROGRESS,
+      summary,
+      rows: state.rows
     };
     chrome.runtime.sendMessage(payload);
     persistScrapeSession({
