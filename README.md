@@ -10,6 +10,27 @@ TeraLead is a powerful Chrome extension built to seamlessly extract rich B2B lea
 - **Column Customization:** Granularly check which exact fields you want exported.
 - **CSV Exporter:** Included native Results Tracker table to verify and download precisely filtered CSV datasets.
 
+## Usage in Chrome
+
+1. Open Chrome and navigate to `chrome://extensions/`.
+2. Toggle the **Developer mode** switch in the top right corner.
+3. Click the **Load unpacked** button in the top left.
+4. Select the `dist/` directory that was generated inside the `teralead-scraper` folder.
+5. The TeraLead Scraper icon will now be available in your Chrome toolbar. Pin it for quick access!
+
+## Running a Scrape
+
+1. Open [Google Maps](https://www.google.com/maps).
+2. Enter your desired search term (e.g., "Landscaping in Colorado").
+3. Click the TeraLead extension icon in your toolbar to open the Control Panel.
+4. **Configure your scrape:**
+   - **Max Rows:** Select how many valid leads you want.
+   - **Export Columns:** Check the specific data points you require.
+   - **Deep Email Enrichment:** Enable to automatically discover emails from websites.
+   - **Strict Scrape Mode:** Enable to forcefully drop rows that miss *any* of your selected Export Columns resulting in a perfectly clean dataset. 
+5. Click **Start Scrape**. You can track the progress dynamically as it sweeps maps and runs background enrichment.
+6. Once finished, click **Results Tracker** to verify your dataset and select **Download CSV**.
+
 ## Development Setup
 
 The project runs on Vite, React, and TypeScript.
@@ -33,24 +54,3 @@ Compile the React code and manifest into the distributable Chrome extension form
 npm run build
 ```
 *(The build output will be generated into the `dist/` directory.)*
-
-## Usage in Chrome
-
-1. Open Chrome and navigate to `chrome://extensions/`.
-2. Toggle the **Developer mode** switch in the top right corner.
-3. Click the **Load unpacked** button in the top left.
-4. Select the `dist/` directory that was generated inside the `teralead-scraper` folder.
-5. The TeraLead Scraper icon will now be available in your Chrome toolbar. Pin it for quick access!
-
-## Running a Scrape
-
-1. Open [Google Maps](https://www.google.com/maps).
-2. Enter your desired search term (e.g., "Landscaping in Colorado").
-3. Click the TeraLead extension icon in your toolbar to open the Control Panel.
-4. **Configure your scrape:**
-   - **Max Rows:** Select how many valid leads you want.
-   - **Export Columns:** Check the specific data points you require.
-   - **Deep Email Enrichment:** Enable to automatically discover emails from websites.
-   - **Strict Scrape Mode:** Enable to forcefully drop rows that miss *any* of your selected Export Columns resulting in a perfectly clean dataset. 
-5. Click **Start Scrape**. You can track the progress dynamically as it sweeps maps and runs background enrichment.
-6. Once finished, click **Results Tracker** to verify your dataset and select **Download CSV**.
