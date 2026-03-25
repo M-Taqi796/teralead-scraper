@@ -1,5 +1,7 @@
 // @ts-nocheck
 import { GbpShared } from "../utils/shared";
+import { StorageManager } from "../utils/storage";
+import { generateCSV, downloadCSV } from "../utils/csv";
 (function () {
   const shared = GbpShared as any;
   const { MSG, CSV_COLUMNS, COLUMN_LABELS, sanitizeColumns, normalizeText, normalizePhoneText, csvEscape } = shared;
@@ -82,45 +84,37 @@ import { GbpShared } from "../utils/shared";
 
   async function refreshState() {
     clearError();
-    const [data, runtime] = await Promise.all([
-      storageGet(["lastRows", "selectedColumns", "scrapeSession", "enrichSession"]),
-      readEnrichRuntimeState()
-    ]);
+    const storageData = await StorageManager.getAllData();
+    rows = storageData.results || [];
+    
+    const confCols = storageData.config.columns || {};
+    const sc = [];
+    if (confCols.name) sc.push('name');
+    if (confCols.phone) sc.push('phone');
+    if (confCols.website) sc.push('website');
+    if (confCols.email) sc.push('email');
+    if (confCols.address) sc.push('address');
+    if (confCols.rating) sc.push('rating');
+    if (confCols.reviews) sc.push('review_count');
+    if (confCols.category) sc.push('category');
+    
+    selectedColumns = sc;
 
-    rows = Array.isArray(data.lastRows) ? data.lastRows : [];
-    selectedColumns = Array.isArray(data.selectedColumns) ? sanitizeColumns(data.selectedColumns) : [...CSV_COLUMNS];
-    scrapeSession = selectSessionForRun(data.scrapeSession, "scrape");
-    enrichSession = selectSessionForRun(data.enrichSession, "enrich");
-    enrichRuntimeState = runtime;
+    scrapeSession = { 
+        status: storageData.isRunning ? 'running' : 'done',
+        updated_at: new Date().toISOString()
+    };
+    enrichSession = {
+        status: storageData.isEnriching ? 'running' : 'idle',
+        updated_at: new Date().toISOString()
+    };
+    enrichRuntimeState = null;
     render();
   }
 
   function onStorageChanged(changes, areaName) {
     if (areaName !== "local") return;
-    let shouldRender = false;
-
-    if (changes.lastRows) {
-      rows = Array.isArray(changes.lastRows.newValue) ? changes.lastRows.newValue : [];
-      shouldRender = true;
-    }
-    if (changes.selectedColumns) {
-      selectedColumns = Array.isArray(changes.selectedColumns.newValue) ? sanitizeColumns(changes.selectedColumns.newValue) : [...CSV_COLUMNS];
-      shouldRender = true;
-    }
-    if (changes.scrapeSession) {
-      scrapeSession = selectSessionForRun(changes.scrapeSession.newValue, "scrape");
-      shouldRender = true;
-    }
-    if (changes.enrichSession) {
-      enrichSession = selectSessionForRun(changes.enrichSession.newValue, "enrich");
-      shouldRender = true;
-      void readEnrichRuntimeState().then((runtime) => {
-        enrichRuntimeState = runtime;
-        if (!isImportedView()) render();
-      });
-    }
-
-    if (shouldRender && !isImportedView()) render();
+    void refreshState();
   }
 
   function render() {
@@ -479,15 +473,11 @@ import { GbpShared } from "../utils/shared";
       setError("No rows to export.");
       return;
     }
-    if (columns.length === 0) {
-      setError("No export columns selected.");
-      return;
-    }
 
     try {
-      const rowsForExport = dataRows.map((row) => normalizePhoneColumnsForExport(row, columns));
-      const csvText = rowsToCsvLoose(rowsForExport, columns);
-      await downloadCsvFile(csvText, exportFilename());
+      const config = (await StorageManager.getAllData()).config;
+      const csvText = generateCSV(dataRows, config);
+      downloadCSV(csvText, exportFilename());
     } catch (error) {
       setError(error && error.message ? error.message : "CSV export failed");
     }

@@ -3,32 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrapify Viewer</title>
-    <link rel="icon" type="image/svg+xml" href="assets/brand/scrapify-mark.svg" />
-    <link rel="alternate icon" type="image/png" href="assets/brand/icon-32.png" />
+    <title>TeraLead Viewer</title>
     <link rel="stylesheet" href="results.css" />
   </head>
   <body>
     <main class="app">
-      <header class="top">
+      <header class="top" style="padding: 24px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
         <div class="hero">
           <div class="brand-block">
-            <img class="results-mark" src="assets/brand/scrapify-mark.svg" alt="Scrapify logo" />
             <div class="brand-copy">
               <div class="brand-row">
-                <p class="eyebrow">Scrapify</p>
-                <span class="hero-chip">Viewer</span>
+                <p class="eyebrow" style="color: #3b82f6; font-weight: bold; margin: 0; font-size: 1.2rem;">TeraLead</p>
+                <span class="hero-chip" style="background: #eff6ff; color: #2563eb; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-left: 8px;">Results Viewer</span>
               </div>
-              <h1>Review, qualify, and export every run</h1>
-              <p id="metaText" class="meta">Waiting for data...</p>
+              <h1 style="margin: 8px 0; font-size: 1.5rem; color: #1e293b;">Review, qualify, and export your lead lists</h1>
+              <p id="metaText" class="meta" style="color: #64748b; font-size: 0.9rem; margin: 0;">Waiting for data...</p>
             </div>
           </div>
         </div>
         <div class="actions">
           <input id="importFileInput" type="file" accept=".csv,text/csv" hidden />
-          <button id="importBtn" type="button">Import CSV</button>
-          <button id="refreshBtn" type="button">Refresh</button>
-          <button id="exportBtn" type="button" class="primary" disabled>Export CSV</button>
+          <button id="importBtn" type="button" style="display:none;">Import CSV</button>
+          <button id="refreshBtn" type="button" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer;">Refresh</button>
+          <button id="exportBtn" type="button" class="primary" style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;" disabled>Download CSV</button>
         </div>
       </header>
 
@@ -53,8 +50,6 @@
 
       <p id="errorText" class="error"></p>
     </main>
-
-    
     <script type="module" src="results.ts"></script>
   </body>
 </html>
