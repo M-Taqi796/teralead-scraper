@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scrapify Viewer</title>
+    <link rel="icon" type="image/svg+xml" href="assets/brand/scrapify-mark.svg" />
+    <link rel="alternate icon" type="image/png" href="assets/brand/icon-32.png" />
+    <link rel="stylesheet" href="results.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="top">
+        <div class="hero">
+          <div class="brand-block">
+            <img class="results-mark" src="assets/brand/scrapify-mark.svg" alt="Scrapify logo" />
+            <div class="brand-copy">
+              <div class="brand-row">
+                <p class="eyebrow">Scrapify</p>
+                <span class="hero-chip">Viewer</span>
+              </div>
+              <h1>Review, qualify, and export every run</h1>
+              <p id="metaText" class="meta">Waiting for data...</p>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <input id="importFileInput" type="file" accept=".csv,text/csv" hidden />
+          <button id="importBtn" type="button">Import CSV</button>
+          <button id="refreshBtn" type="button">Refresh</button>
+          <button id="exportBtn" type="button" class="primary" disabled>Export CSV</button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="summary">
+          <span id="statusChip" class="status-chip idle">Idle</span>
+          <span id="rowsCount">0 rows</span>
+          <span id="colsCount">0 columns</span>
+          <span id="renderHint"></span>
+        </div>
+
+        <p id="emptyState" class="empty">No rows yet. Run a scrape first.</p>
+
+        <div id="tableWrap" class="table-wrap hidden">
+          <table id="resultsTable">
+            <colgroup id="tableCols"></colgroup>
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <p id="errorText" class="error"></p>
+    </main>
+
+    
+    <script type="module" src="results.ts"></script>
+  </body>
+</html>

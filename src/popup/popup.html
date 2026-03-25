@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeraLead - Business Scraper</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      width: 600px;
+      max-height: 800px;
+      overflow: hidden;
+    }
+
+    #root {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .popup-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 24px;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #0f3460;
+    }
+
+    .header-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #ea5455 0%, #f07167 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      background: linear-gradient(135deg, #ea5455, #f07167);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .config-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .config-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #a0a0a0;
+      letter-spacing: 0.5px;
+    }
+
+    .row-count-input-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .row-count-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      background: #0f3460;
+      color: #e0e0e0;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .row-count-input:focus {
+      outline: none;
+      border-color: #ea5455;
+      box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.1);
+      background: #16213e;
+    }
+
+    .columns-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 6px;
+      background: #0f3460;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .checkbox-wrapper:hover {
+      background: #16213e;
+    }
+
+    .checkbox-wrapper input {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: #ea5455;
+    }
+
+    .checkbox-wrapper label {
+      font-size: 13px;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 16px;
+      background: #0f3460;
+      border-radius: 8px;
+      border-left: 4px solid #ea5455;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ea5455;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #a0a0a0;
+      letter-spacing: 0.5px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ea5455 0%, #f07167 100%);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(234, 84, 85, 0.3);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #0f3460;
+      color: #ea5455;
+      border: 2px solid #ea5455;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #ea5455;
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-align: center;
+      display: none;
+    }
+
+    .status-message.active {
+      display: block;
+    }
+
+    .status-message.info {
+      background: #0f3460;
+      color: #64b5f6;
+      border-left: 4px solid #64b5f6;
+    }
+
+    .status-message.success {
+      background: #1b5e20;
+      color: #81c784;
+      border-left: 4px solid #81c784;
+    }
+
+    .status-message.error {
+      background: #b71c1c;
+      color: #ef5350;
+      border-left: 4px solid #ef5350;
+    }
+
+    .scrollable-area {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .scrollable-area::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .scrollable-area::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .scrollable-area::-webkit-scrollbar-thumb {
+      background: #0f3460;
+      border-radius: 3px;
+    }
+
+    .scrollable-area::-webkit-scrollbar-thumb:hover {
+      background: #16213e;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="./popup-main.tsx"></script>
+</body>
+</html>

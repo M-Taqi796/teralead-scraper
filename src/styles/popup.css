@@ -1,0 +1,137 @@
+/* Popup Styles - Tailwind utilities and custom styling */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #ea5455;
+  --color-primary-light: #f07167;
+  --color-dark: #1a1a2e;
+  --color-darker: #16213e;
+  --color-darkest: #0f3460;
+  --color-text: #e0e0e0;
+  --color-text-muted: #a0a0a0;
+  --color-border: #0f3460;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-darker) 100%);
+  color: var(--color-text);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-darkest);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-darker);
+}
+
+/* Focus styles for accessibility */
+input:focus,
+button:focus {
+  outline: none;
+}
+
+button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(234, 84, 85, 0.3);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 640px) {
+  .columns-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.status-message {
+  animation: slideIn 0.3s ease-out;
+}
+
+button:not(:disabled) {
+  transition: all 0.2s ease;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Dark mode support (default) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-dark: #f5f5f5;
+    --color-darker: #ffffff;
+    --color-darkest: #f0f0f0;
+    --color-text: #333333;
+    --color-text-muted: #666666;
+    --color-border: #e0e0e0;
+  }
+
+  body {
+    background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-darker) 100%);
+  }
+
+  .checkbox-wrapper {
+    background: var(--color-darkest);
+  }
+
+  .checkbox-wrapper:hover {
+    background: #f9f9f9;
+  }
+
+  .dashboard {
+    background: var(--color-darkest);
+    border-left-color: var(--color-primary);
+  }
+
+  .row-count-input {
+    background: var(--color-darkest);
+    border-color: #e0e0e0;
+  }
+
+  .row-count-input:focus {
+    border-color: var(--color-primary);
+    background: white;
+  }
+}

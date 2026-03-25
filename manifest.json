@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "TeraLead - Business Data Scraper",
+  "version": "1.0.0",
+  "description": "Extract business data from Google Maps and enrich with email addresses",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.google.com/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.google.com/maps/*"],
+      "js": ["src/content/content.ts"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "TeraLead Business Scraper"
+  }
+}
