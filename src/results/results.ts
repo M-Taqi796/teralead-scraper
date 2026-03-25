@@ -2,6 +2,7 @@
 import { GbpShared } from "../utils/shared";
 import { StorageManager } from "../utils/storage";
 import { generateCSV, downloadCSV } from "../utils/csv";
+import { createIcons, RefreshCw, Download, Database } from 'lucide';
 (function () {
   const shared = GbpShared as any;
   const { MSG, CSV_COLUMNS, COLUMN_LABELS, sanitizeColumns, normalizeText, normalizePhoneText, csvEscape } = shared;
@@ -55,6 +56,7 @@ import { generateCSV, downloadCSV } from "../utils/csv";
   });
 
   async function init() {
+    createIcons({ icons: { RefreshCw, Download, Database } });
     bindEvents();
     await refreshState();
     chrome.storage.onChanged.addListener(onStorageChanged);

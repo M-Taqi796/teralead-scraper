@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { StorageManager } from '../utils/storage';
 import { GbpShared } from '../utils/shared';
 import type { StorageData, ScrapingConfig } from '../utils/types';
+import { Map as MapIcon, RefreshCw, Mail, Play, Square, Database, Settings, LayoutList, Globe } from 'lucide-react';
 import '../index.css';
 
 const { MSG } = GbpShared as any;
@@ -101,7 +102,7 @@ export default function Popup() {
     <div className="tl-container">
       <header className="tl-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }}>
         <div>
-          <h1 style={{ margin: 0 }}>TeraLead Scraper</h1>
+          <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}><MapIcon size={20} /> TeraLead Scraper</h1>
           <p style={{ margin: 0, marginTop: '2px' }}>B2B Maps Extraction & Enrichment</p>
         </div>
         <button 
@@ -115,26 +116,27 @@ export default function Popup() {
             borderRadius: '4px', 
             cursor: 'pointer',
             color: '#ffffff',
+            display: 'flex', alignItems: 'center', gap: '4px',
             whiteSpace: 'nowrap'
           }}
           title="Wipe previous data and start fresh"
         >
-          New Scrape
+          <RefreshCw size={12} /> New Scrape
         </button>
       </header>
 
       <section className="tl-dashboard">
         <div className="tl-stats-grid">
           <div className="tl-stat-box">
-            <span className="tl-label">Scraped</span>
+            <span className="tl-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><LayoutList size={12} /> Scraped</span>
             <span className="tl-value">{stats.processed}</span>
           </div>
           <div className="tl-stat-box">
-            <span className="tl-label">Visited</span>
+            <span className="tl-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><Globe size={12} /> Visited</span>
             <span className="tl-value">{stats.sitePagesVisited}</span>
           </div>
           <div className="tl-stat-box highlight">
-            <span className="tl-label">Emails</span>
+            <span className="tl-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><Mail size={12} /> Emails</span>
             <span className="tl-value">{stats.emailsFound}</span>
           </div>
         </div>
@@ -147,7 +149,7 @@ export default function Popup() {
       </section>
 
       <section className="tl-settings">
-        <h2>Configuration</h2>
+        <h2 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Settings size={16} /> Configuration</h2>
         <div className="tl-input-group">
           <label>Max Rows to Scrape:</label>
           <input 
@@ -204,14 +206,14 @@ export default function Popup() {
       </section>
 
       <div className="tl-actions">
-        <button className="tl-btn tl-btn-viewer" onClick={() => chrome.tabs.create({ url: 'src/results/results.html' })}>
-          Results Tracker
+        <button className="tl-btn tl-btn-viewer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={() => chrome.tabs.create({ url: 'src/results/results.html' })}>
+          <Database size={16} /> Results Tracker
         </button>
-        <button className="tl-btn tl-btn-stop" disabled={!isRunning && !isEnriching} onClick={handleStop}>
-          Stop All
+        <button className="tl-btn tl-btn-stop" disabled={!isRunning && !isEnriching} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={handleStop}>
+          <Square size={16} /> Stop All
         </button>
-        <button className="tl-btn tl-btn-primary" disabled={isRunning || isEnriching} onClick={handleStart}>
-          {isRunning ? 'Scraping...' : 'Start Scrape'}
+        <button className="tl-btn tl-btn-primary" disabled={isRunning || isEnriching} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }} onClick={handleStart}>
+          <Play size={16} /> {isRunning ? 'Scraping...' : 'Start Scrape'}
         </button>
       </div>
     </div>
