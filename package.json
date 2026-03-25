@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && node scripts/fix-popup-paths.js",
+    "release": "npm run build && zip -r teralead-scraper.zip dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
