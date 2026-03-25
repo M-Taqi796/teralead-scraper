@@ -246,8 +246,35 @@ import { GbpShared } from "../utils/shared";
             backfillSeenStatsFromRow(row, seenCapture);
 
             if (row && applyFilters(row, scrapeStageFilters)) {
-              const guardedRow = applyWebsiteOwnershipGuard(row);
-              const key = dedupeKey(guardedRow);
+              let guardedRow = applyWebsiteOwnershipGuard(row);
+
+              if (guardedRow && config.strictColumnMatch) {
+                if (config.columns && config.columns.email && !guardedRow.email && guardedRow.website && config.enableEnrichment !== false) {
+                  try {
+                    const enrichRes = await new Promise(resolve => {
+                      chrome.runtime.sendMessage({ type: 'SYNC_ENRICH', url: guardedRow.website }, resolve);
+                    });
+                    if (enrichRes && (enrichRes as any).email) {
+                      guardedRow.email = (enrichRes as any).email;
+                      guardedRow.primary_email = (enrichRes as any).email;
+                      guardedRow.primary_email_type = 'scanned';
+                      guardedRow.website_scan_status = 'success';
+                    }
+                  } catch (e) {}
+                }
+                
+                const missingCols = Object.entries(config.columns || {}).some(([col, isReq]) => {
+                  if (!isReq) return false;
+                  if (col === 'reviews') return !guardedRow.review_count;
+                  return !guardedRow[col as keyof typeof guardedRow];
+                });
+                
+                if (missingCols) {
+                  guardedRow = null; 
+                }
+              }
+
+              const key = guardedRow ? dedupeKey(guardedRow) : null;
               if (key) {
                 if (state.seenKeys.has(key)) {
                   state.duplicates += 1;

@@ -28,7 +28,24 @@ chrome.runtime.onMessage.addListener((request: any, _sender: chrome.runtime.Mess
     StorageManager.setRunning(false).catch(console.error);
     return false;
   }
+  if (request.type === 'SYNC_ENRICH') {
+    findEmailDeep(request.url)
+      .then(email => _sendResponse({ email }))
+      .catch(() => _sendResponse({}));
+    return true; // Keep channel open
+  }
 });
+
+async function findEmailDeep(website: string): Promise<string | undefined> {
+  let email = await fetchEmailFromURL(website);
+  if (!email) {
+    email = await fetchEmailFromURL(`${website.replace(/\/$/, '')}/contact`);
+  }
+  if (!email) {
+    email = await fetchEmailFromURL(`${website.replace(/\/$/, '')}/about`);
+  }
+  return email;
+}
 
 async function handleScrapingUpdates(request: any) {
   if (request.summary) {
@@ -122,21 +139,9 @@ async function enrichBusiness(business: BusinessData): Promise<BusinessData> {
   if (!enriched.website) return enriched;
   
   try {
-    let email = await fetchEmailFromURL(enriched.website);
-    enriched.site_pages_visited++;
+    const email = await findEmailDeep(enriched.website);
+    enriched.site_pages_visited += email ? 1 : 3;
 
-    if (!email) {
-      const contactUrl = `${enriched.website.replace(/\/$/, '')}/contact`;
-      email = await fetchEmailFromURL(contactUrl);
-      enriched.site_pages_visited++;
-    }
-    
-    if (!email) {
-      const aboutUrl = `${enriched.website.replace(/\/$/, '')}/about`;
-      email = await fetchEmailFromURL(aboutUrl);
-      enriched.site_pages_visited++;
-    }
-    
     if (email) {
       enriched.email = email;
       enriched.primary_email = email;

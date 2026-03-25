@@ -23,6 +23,7 @@ const DEFAULT_CONFIG: ScrapingConfig = {
     address: true,
   },
   enableEnrichment: true,
+  strictColumnMatch: false,
 };
 
 const DEFAULT_STATS: DashboardStats = {

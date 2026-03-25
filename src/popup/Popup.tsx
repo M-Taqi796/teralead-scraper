@@ -134,6 +134,16 @@ export default function Popup() {
           />
           Automatically visit target websites to extract emails
         </label>
+
+        <h3 style={{marginTop: '16px'}}>Strict Scrape Mode</h3>
+        <label className="tl-enrich-toggle" style={{background: '#f1f5f9', borderColor: '#cbd5e1', color: '#334155'}}>
+          <input 
+            type="checkbox" 
+            checked={config.strictColumnMatch || false} 
+            onChange={e => updateConfig('strictColumnMatch', e.target.checked)} 
+          />
+          Skip rows missing ANY selected columns (Wait for replacements)
+        </label>
       </section>
 
       <div className="tl-actions">

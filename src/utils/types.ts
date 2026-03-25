@@ -72,6 +72,7 @@ export interface ScrapingConfig {
   runId?: string;
   runTabId?: number;
   enableEnrichment?: boolean; // Background email fetch feature
+  strictColumnMatch?: boolean; // Skip rows missing selected columns
 }
 
 export interface DashboardStats {
