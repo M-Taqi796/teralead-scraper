@@ -322,6 +322,7 @@ import { GbpShared } from "../utils/shared";
       }
 
       const summary = {
+        total: state.runTotalItems,
         processed: state.processed,
         matched: state.matched,
         duplicates: state.duplicates,
@@ -331,7 +332,8 @@ import { GbpShared } from "../utils/shared";
         stopped: state.stopRequested,
         inline_enrichment_completed: false,
         output_filters_applied: false,
-        ...state.enrichmentStats
+        ...state.enrichmentStats,
+        emailsFound: state.rows.filter((r: any) => !!r.email || !!r.primary_email).length
       };
 
       persistScrapeSession({
@@ -2579,7 +2581,8 @@ import { GbpShared } from "../utils/shared";
       processed: state.processed,
       matched: state.matched,
       duplicates: state.duplicates,
-      errors: state.errors
+      errors: state.errors,
+      emailsFound: state.rows.filter(r => !!r.email || !!r.primary_email).length
     };
     const payload = {
       type: MSG.SCRAPE_PROGRESS,

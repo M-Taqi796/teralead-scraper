@@ -83,6 +83,15 @@ export default function Popup() {
     });
   };
 
+  const handleReset = async () => {
+    if (confirm("Are you sure you want to completely erase the last scrape's data and reset all your settings?")) {
+      await StorageManager.clearAll();
+      await StorageManager.initStorage();
+      const freshData = await StorageManager.getAllData();
+      setData(freshData);
+    }
+  };
+
   if (!data) return <div className="loading">Loading TeraLead...</div>;
 
   const { stats, config, isRunning, isEnriching } = data;
@@ -90,9 +99,28 @@ export default function Popup() {
 
   return (
     <div className="tl-container">
-      <header className="tl-header">
-        <h1>TeraLead Scraper</h1>
-        <p>B2B Maps Extraction & Enrichment</p>
+      <header className="tl-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }}>
+        <div>
+          <h1 style={{ margin: 0 }}>TeraLead Scraper</h1>
+          <p style={{ margin: 0, marginTop: '2px' }}>B2B Maps Extraction & Enrichment</p>
+        </div>
+        <button 
+          onClick={handleReset} 
+          disabled={isRunning || isEnriching}
+          style={{
+            background: 'transparent', 
+            border: '1px solid rgba(255,255,255,0.4)', 
+            fontSize: '11px', 
+            padding: '4px 8px', 
+            borderRadius: '4px', 
+            cursor: 'pointer',
+            color: '#ffffff',
+            whiteSpace: 'nowrap'
+          }}
+          title="Wipe previous data and start fresh"
+        >
+          New Scrape
+        </button>
       </header>
 
       <section className="tl-dashboard">
@@ -149,13 +177,13 @@ export default function Popup() {
                 checked={isChecked as boolean} 
                 onChange={e => updateColumn(colName as keyof ScrapingConfig['columns'], e.target.checked)}
               />
-              <span style={{textTransform: 'capitalize'}}>{colName.replace('_', ' ')}</span>
+              <span style={{textTransform: 'capitalize', color: '#1e293b', fontWeight: 500}}>{colName.replace('_', ' ')}</span>
             </label>
           ))}
         </div>
 
         <h3>Deep Email Enrichment</h3>
-        <label className="tl-enrich-toggle">
+        <label className="tl-enrich-toggle" style={{color: '#1e293b', fontWeight: 500}}>
           <input 
             type="checkbox" 
             checked={config.enableEnrichment !== false} 
@@ -165,7 +193,7 @@ export default function Popup() {
         </label>
 
         <h3 style={{marginTop: '16px'}}>Strict Scrape Mode</h3>
-        <label className="tl-enrich-toggle" style={{background: '#f1f5f9', borderColor: '#cbd5e1', color: '#334155'}}>
+        <label className="tl-enrich-toggle" style={{background: '#f1f5f9', borderColor: '#cbd5e1', color: '#1e293b', fontWeight: 500}}>
           <input 
             type="checkbox" 
             checked={config.strictColumnMatch || false} 

@@ -56,8 +56,7 @@ chrome.runtime.onMessage.addListener((request: any, _sender: chrome.runtime.Mess
     findEmailDeep(request.url)
       .then(async email => {
         const stats = await StorageManager.getStats();
-        stats.sitePagesVisited += email ? 1 : 3;
-        if (email) stats.emailsFound++;
+        stats.sitePagesVisited += 1;
         await StorageManager.updateStats(stats);
         _sendResponse({ email });
       })
@@ -91,6 +90,11 @@ async function handleScrapingUpdates(request: any) {
     stats.seenReviewsSum = request.summary.seenReviewsSum || stats.seenReviewsSum;
     stats.seenReviewsCount = request.summary.seenReviewsCount || stats.seenReviewsCount;
     stats.speedStat = request.summary.speedStat || stats.speedStat;
+    
+    if (request.summary.emailsFound !== undefined) {
+      stats.emailsFound = request.summary.emailsFound;
+    }
+    
     if (request.type === MSG.SCRAPE_DONE) {
       stats.stopped = request.summary.stopped;
     }
@@ -171,7 +175,7 @@ async function enrichBusiness(business: BusinessData): Promise<BusinessData> {
   
   try {
     const email = await findEmailDeep(enriched.website);
-    enriched.site_pages_visited += email ? 1 : 3;
+    enriched.site_pages_visited += 1;
 
     if (email) {
       enriched.email = email;
